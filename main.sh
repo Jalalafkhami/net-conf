@@ -1,5 +1,14 @@
 #!/bin/bash
+# Add Theme for Dialog
+export DIALOGRC=./Theme/sourcemage.rc
 
+# Check if the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root: Permission denied"
+  exit
+fi
+
+# Menu  
 choice=$(dialog --stdout --menu "Choose an option" 15 50 3 \
     1 "Network Configuration" \
     2 "Exit"

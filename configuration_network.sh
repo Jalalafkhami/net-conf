@@ -2,8 +2,13 @@
 # DNS
 change_dns(){
     dns=$(dialog --stdout --inputbox "Enter DNS server (temporary):" 8 40)
-    dialog --msgbox "You entered DNS: $dns" 6 40
-    echo "nameserver $dns" > /etc/resolv.conf
+    if ./dns_validate.sh "$dns"; then
+        dialog --msgbox "You entered DNS: $dns" 6 40
+        echo "nameserver $dns" > /etc/resolv.conf
+
+    else
+        dialog --msgbox "Invalid DNS format. Please try again." 6 40
+    fi    
 
 }
 
