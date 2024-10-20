@@ -1,5 +1,5 @@
-install: install_packages
-	echo "Installation complete."
+install: install_packages make_executable
+	echo "ّٔInitial Installation complete. Please Run 'sudo ./main.sh'"
 
 # installing Requirement Package
 install_packages:
