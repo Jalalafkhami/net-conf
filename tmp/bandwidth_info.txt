@@ -1,0 +1,10 @@
+lo
+wlo1
+br-fe6dde38c381
+docker0
+br-373ae6a71df2
+br-679c7bb17702
+br-d1790a61ed6f
+br-e5e1e6030720
+nekoray-tun: RX Bandwidth: 4099 bytes/s, TX Bandwidth: 4099 bytes/s
+

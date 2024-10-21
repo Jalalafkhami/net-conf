@@ -7,9 +7,9 @@ install: install_packages make_executable
 install_packages:
 	@echo "Installing packages..."
 	@if [ -f /etc/debian_version ]; then \
-		sudo apt-get update && sudo apt-get install -y dialog openvswitch-switch nftables resolvconf; \
+		sudo apt-get update && sudo apt-get install -y dialog openvswitch-switch nftables ethtool; \
 	elif [ -f /etc/redhat-release ]; then \
-		sudo yum install -y dialog openvswitch-switch nftables resolvconf; \
+		sudo yum install -y dialog openvswitch-switch nftables ethtool; \
 	else \
 		echo "Unsupported Linux distribution. Please install packages manually."; \
 		exit 1; \
