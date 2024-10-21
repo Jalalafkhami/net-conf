@@ -77,7 +77,7 @@ create_tcp_udp_filter_rule() {
     continue
   else
     dialog --msgbox "Invalid IP address. Please try again." 6 50
-    create_tcp_udp_filter_rule && exit
+    show_access_control_menu && exit
   fi
   dest_ip=$(dialog --stdout --inputbox "Enter Destination IP:" 8 40)
   if ./validate/ip_validate.sh "$dest_ip"; then

@@ -184,7 +184,7 @@ add_route() {
             fi
             interface=$(select_interface)
             if [ -n "$interface" ]; then
-                ip route add "$ip" via "$gatway" dev "$interface"
+                ip route add "$ip" via "$gateway"
                 if [ $? -eq 0 ]; then
                     dialog --msgbox "Temporary route added successfully to $CONFIG_FILE!" 8 40
                 else
@@ -217,10 +217,12 @@ add_route() {
                 if [ -f /etc/network/interfaces ]; then
                     # Debian/Ubuntu
                     echo "uo rote add -net $ip gw $gateway dev $interface"| tee -a "/etc/network/interfaces" > /dev/null
+                    systemctl restart networking
                     dialog --msgbox "Permanent IP set for $interface: $ip" 8 40
                 elif [ -f /etc/sysconfig/network-scripts/ifcfg-$interface ]; then
                     # CentOS/RHEL
                     echo "uo rote add -net $ip gw $gateway dev $interface"| tee -a "/etc/sysconfig/network-scripts/ifcfg-$interface" > /dev/null
+                    systemctl restart NetworkManager
                     dialog --msgbox "Permanent IP set for $interface: $ip" 8 40
                 else
                     dialog --msgbox "Network configuration not supported" 8 40
@@ -255,6 +257,8 @@ remove_route() {
             ip=$(dialog --stdout --inputbox "Enter the destination network (example:192.168.1.0/24):" 8 40)
             if ./validate/ip_netmask_validate.sh "$ip"; then
                 continue
+            elif ./validate/ip_validate.sh "$ip"; then
+                continue
             else
                 dialog --msgbox "Invalid IP format. Please try again." 8 40
                 add_route && exit
@@ -268,7 +272,7 @@ remove_route() {
             fi
             interface=$(select_interface)
             if [ -n "$interface" ]; then
-                ip route del "$ip" via "$gatway" dev "$interface"
+                ip route del "$ip" via "$gateway" dev "$interface"
                 if [ $? -eq 0 ]; then
                     dialog --msgbox "Temporary route deleted successfully!" 8 40
                 else
