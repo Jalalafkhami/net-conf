@@ -28,7 +28,7 @@ A terminal-based user interface (TUI) application for managing and configuring n
 
    ```bash
    git clone https://github.com/Jalalafkhami/net-conf.git
-   cd network-configuration-tool
+   cd net-conf
 2. Build the project:
 
 	```bash
