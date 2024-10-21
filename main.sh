@@ -11,10 +11,14 @@ fi
 # Menu  
 choice=$(dialog --stdout --menu "Choose an option" 15 50 3 \
     1 "Network Configuration" \
-    2 "Exit"
+    2 "Nftables" \
+    3 "Manage OVS" \
+    4 "Exit" 
 )
 
 case $choice in
     1) ./configuration_network.sh ;;
-    2) exit 0 ;;
+    2) ./nftables.sh ;;
+    3) ./ovs.sh ;;
+    4) exit 0 ;;
 esac

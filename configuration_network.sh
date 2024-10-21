@@ -20,20 +20,23 @@ change_dns(){
                 change_dns && exit
             fi   ;; 
         2)  dns=$(dialog --stdout --inputbox "Enter DNS server (permanent):" 8 40) #Permanent DNS
+            interface=$(select_interface)
             if ./validate/dns_validate.sh "$dns"; then
                 dialog --msgbox "You entered DNS: $dns" 8 40
-                # Check file is valid
-                CONFIG_FILE="/etc/systemd/resolved.conf"
-                if [ ! -f "$CONFIG_FILE" ]; then
-                    dialog --msgbox "Configuration file $CONFIG_FILE not found! (apt install resolvconf)" 8 40
-                    change_dns && exit
-                fi 
-                # Backup configuration
-                sudo cp $CONFIG_FILE ${CONFIG_FILE}.bak
-                # Update configuration
-                sudo sed -i "s/^*DNS=.*DNS=${dns}/" $CONFIG_FILE
-                # Restart network services
-                sudo systemctl restart systemd-resolved
+                # Check OS
+                if [ -f /etc/network/interfaces ]; then
+                    # Debian/Ubuntu
+                    echo -e "auto $interface\niface $interface inet static\n\tdns-nameserver $dns" | tee -a /etc/network/interfaces > /dev/null
+                    systemctl restart networking
+                    dialog --msgbox "Permanent DNS set for $interface: $ip" 8 40
+                elif [ -f /etc/sysconfig/network-scripts/ifcfg-$interface ]; then
+                    # CentOS/RHEL
+                    echo -e "auto $interface\niface $interface inet static\n\tdns-nameserver $ip" | tee -a /etc/sysconfig/network-scripts/ifcfg-$interface > /dev/null
+                    systemctl restart NetworkManager
+                    dialog --msgbox "Permanent DNS set for $interface: $ip" 8 40 
+                else
+                    dialog --msgbox "Network configuration not supported" 8 40
+                fi
             else
                 dialog --msgbox "Invalid DNS format. Please try again." 8 40
                 change_dns && exit
@@ -113,12 +116,14 @@ change_ip_static() {
                     # Check OS
                     if [ -f /etc/network/interfaces ]; then
                         # Debian/Ubuntu
-                        sed -i "/iface $interface inet static/!b;n;c\\address $ip" /etc/network/interfaces
+                        echo -e "auto $interface\niface $interface inet static\n\taddress $ip" | tee -a /etc/network/interfaces > /dev/null
+                        systemctl restart networking
                         dialog --msgbox "Permanent IP set for $interface: $ip" 8 40
                     elif [ -f /etc/sysconfig/network-scripts/ifcfg-$interface ]; then
                         # CentOS/RHEL
-                        sed -i "s/^IPADDR=.*/IPADDR=$ip/" /etc/sysconfig/network-scripts/ifcfg-$interface
-                        dialog --msgbox "Permanent IP set for $interface: $ip" 8 40
+                        echo -e "auto $interface\niface $interface inet static\n\taddress $ip" | tee -a /etc/sysconfig/network-scripts/ifcfg-$interface > /dev/null
+                        systemctl restart NetworkManager
+                        dialog --msgbox "Permanent IP set for $interface: $ip" 8 40 
                     else
                         dialog --msgbox "Network configuration not supported" 8 40
                     fi
@@ -161,14 +166,16 @@ add_route() {
     choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
     case $choices in
         1)
-            ip=$(dialog --stdout --inputbox "Enter the destination network (example:192.168.1.0/24):" 8 40)
+            ip=$(dialog --stdout --inputbox "Enter the destination network.:" 8 40)
             if ./validate/ip_netmask_validate.sh "$ip"; then
+                continue
+            elif ./validate/ip_validate.sh "$ip"; then
                 continue
             else
                 dialog --msgbox "Invalid IP format. Please try again." 8 40
                 add_route && exit
             fi   
-            gateway=$(dialog --stdout --inputbox "Enter gateway (example: 192.168.1.1):" 8 40)
+            gateway=$(dialog --stdout --inputbox "Enter gateway (example: 192.168.1.254):" 8 40)
             if ./validate/ip_validate.sh "$gateway"; then
                 continue
             else
@@ -334,7 +341,9 @@ show_menu() {
         1) change_dns ;;
         2) change_hostname ;;
         3) change_ip_static ;;
-        4) dhclient eth0 ;;
+        4) interface=$(select_interface)
+            dhclient $interface
+            ./configuration_network.sh && exit  ;;
         5) add_route ;;
         6) remove_route ;;
         7) ./main.sh && exit ;;
