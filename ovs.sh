@@ -117,6 +117,24 @@ set_trunk_port() {
     fi
 }
 
+# تابعی برای نمایش پورت‌های یک بریج OVS
+show_ports() {
+    # نام بریج OVS
+    BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name to show ports:" 8 40 3>&1 1>&2 2>&3 3>&-)
+
+    if [ -n "$BRIDGE_NAME" ]; then
+        PORTS=$(ovs-vsctl list port | grep -B2 -E "name|tag|ofport" | grep -A2 "$BRIDGE_NAME")
+
+        if [ -n "$PORTS" ]; then
+            dialog --msgbox "Ports on Bridge $BRIDGE_NAME:\n\n$PORTS" 15 60
+        else
+            dialog --msgbox "No ports found on bridge $BRIDGE_NAME." 6 40
+        fi
+    else
+        dialog --msgbox "Bridge name cannot be empty." 6 40
+    fi
+}
+
 create_vlan() {
     # نام بریج OVS
     BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name:" 8 40 3>&1 1>&2 2>&3 3>&-)
@@ -232,8 +250,7 @@ show_menu_add_remove_bridge(){
   esac
 }
 
-# show menu Add and Remove Po
-# show menu Disable and Enable Port
+# show menu manage Port
 show_menu_port(){
     choice=$(dialog --stdout --menu "Select an option:" 15 50 3 \
     1 "Add Port" \
@@ -242,6 +259,7 @@ show_menu_port(){
     4 "Disable Port" \
     5 "Access Port" \
     6 "Trunk Port" \
+    7 "Show Port" \
     7 "Back")
 
   case $choice in
@@ -249,9 +267,10 @@ show_menu_port(){
     2) del_port ;;
     3) enable_port ;;
     4) disable_port ;;
-    5) set_access_port
+    5) set_access_port ;;
     6) set_trunk_port ;;
-    7) show_menu ;;
+    7) show_ports ;;
+    8) show_menu ;;
     *) show_menu ;;
   esac
 }
