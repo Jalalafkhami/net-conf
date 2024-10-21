@@ -27,7 +27,7 @@ A terminal-based user interface (TUI) application for managing and configuring n
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/network-configuration-tool.git
+   git clone https://igit.partdp.ir/j.afkhami/j.afkhami.git
    cd network-configuration-tool
 2. Build the project:
 
