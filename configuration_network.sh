@@ -200,6 +200,8 @@ add_route() {
             ip=$(dialog --stdout --inputbox "Enter the destination network (example:192.168.1.0/24):" 8 40)
             if ./validate/ip_netmask_validate.sh "$ip"; then
                 continue
+            elif ./validate/ip_validate.sh "$ip"; then
+                continue
             else
                 dialog --msgbox "Invalid IP format. Please try again." 8 40
                 add_route && exit
@@ -287,6 +289,8 @@ remove_route() {
         3)
             ip=$(dialog --stdout --inputbox "Enter the destination network (example:192.168.1.0/24):" 8 40)
             if ./validate/ip_netmask_validate.sh "$ip"; then
+                continue
+            elif ./validate/ip_validate.sh "$ip"; then
                 continue
             else
                 dialog --msgbox "Invalid IP format. Please try again." 8 40

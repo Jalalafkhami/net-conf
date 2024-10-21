@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# تابعی برای لیست کردن بریج‌های OVS
+# show Bridges
 list_bridges() {
     BRIDGES=$(ovs-vsctl list-br)
     if [ -n "$BRIDGES" ]; then
@@ -9,7 +9,7 @@ list_bridges() {
         dialog --msgbox "No OVS Bridges found." 6 40
     fi
 }
-# تابعی برای افزودن بریج جدید
+# Add Bridge
 add_bridge() {
     BRIDGE_NAME=$(dialog --inputbox "Enter new bridge name:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$BRIDGE_NAME" ]; then
@@ -20,7 +20,7 @@ add_bridge() {
     fi
 }
 
-# تابعی برای حذف بریج
+# Remove Bridge
 del_bridge() {
     BRIDGE_NAME=$(dialog --inputbox "Enter bridge name to delete:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$BRIDGE_NAME" ]; then
@@ -31,7 +31,7 @@ del_bridge() {
     fi
 }
 
-# تابعی برای اضافه کردن پورت به یک بریج
+# Add Port for each bridge
 add_port() {
     BRIDGE_NAME=$(dialog --inputbox "Enter bridge name:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$BRIDGE_NAME" ]; then
@@ -47,7 +47,7 @@ add_port() {
     fi
 }
 
-# تابعی برای حذف کردن پورت از یک بریج
+# Remove Port for each bridge
 del_port() {
     BRIDGE_NAME=$(dialog --inputbox "Enter bridge name:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$BRIDGE_NAME" ]; then
@@ -63,7 +63,7 @@ del_port() {
     fi
 }
 
-# تابعی برای خاموش کردن پورت
+# Disable Port
 disable_port() {
     PORT_NAME=$(dialog --inputbox "Enter port name to disable:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$PORT_NAME" ]; then
@@ -74,7 +74,7 @@ disable_port() {
     fi
 }
 
-# تابعی برای روشن کردن پورت
+# Enable Port 
 enable_port() {
     PORT_NAME=$(dialog --inputbox "Enter port name to enable:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$PORT_NAME" ]; then
@@ -85,7 +85,7 @@ enable_port() {
     fi
 }
 
-# تابعی برای تنظیم پورت به عنوان access
+# Set Access port
 set_access_port() {
     PORT_NAME=$(dialog --inputbox "Enter port name to configure as Access Port:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$PORT_NAME" ]; then
@@ -101,7 +101,7 @@ set_access_port() {
     fi
 }
 
-# تابعی برای تنظیم پورت به عنوان trunk
+# Set Trunk Port
 set_trunk_port() {
     PORT_NAME=$(dialog --inputbox "Enter port name to configure as Trunk Port:" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$PORT_NAME" ]; then
@@ -117,7 +117,7 @@ set_trunk_port() {
     fi
 }
 
-# تابعی برای نمایش پورت‌های یک بریج OVS
+# Show Ports
 show_ports() {
     # نام بریج OVS
     BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name to show ports:" 8 40 3>&1 1>&2 2>&3 3>&-)
@@ -135,6 +135,7 @@ show_ports() {
     fi
 }
 
+# Create Vlan
 create_vlan() {
     # نام بریج OVS
     BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name:" 8 40 3>&1 1>&2 2>&3 3>&-)
@@ -164,7 +165,7 @@ create_vlan() {
     fi
 }
 
-# تابعی برای حذف VLAN
+# Delete Vlan
 delete_vlan() {
     # نام بریج OVS
     BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name to delete VLAN from:" 8 40 3>&1 1>&2 2>&3 3>&-)
@@ -184,7 +185,7 @@ delete_vlan() {
     fi
 }
 
-# تابعی برای نمایش VLAN‌ها
+# show Vlan interface
 show_vlans() {
     # نام بریج OVS
     BRIDGE_NAME=$(dialog --inputbox "Enter the OVS Bridge name to show VLANs:" 8 40 3>&1 1>&2 2>&3 3>&-)
@@ -202,7 +203,7 @@ show_vlans() {
     fi
 }
 
-# تابعی برای تنظیم IP روی اینترفیس VLAN
+# setup vlan IP
 set_vlan_ip() {
     VLAN_NAME=$(dialog --inputbox "Enter VLAN Interface Name (e.g., vlan100):" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$VLAN_NAME" ]; then
@@ -219,7 +220,7 @@ set_vlan_ip() {
     fi
 }
 
-# تابعی برای حذف IP از اینترفیس VLAN
+# delete vlan IP
 del_vlan_ip() {
     VLAN_NAME=$(dialog --inputbox "Enter VLAN Interface Name (e.g., vlan100):" 8 40 3>&1 1>&2 2>&3 3>&-)
     if [ -n "$VLAN_NAME" ]; then
