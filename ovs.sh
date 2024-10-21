@@ -232,32 +232,26 @@ show_menu_add_remove_bridge(){
   esac
 }
 
+# show menu Add and Remove Po
 # show menu Disable and Enable Port
-show_menu_disable_enable_port(){
+show_menu_port(){
     choice=$(dialog --stdout --menu "Select an option:" 15 50 3 \
-    1 "Enable Port" \
-    2 "Disable Port" \
-    3 "Back")
+    1 "Add Port" \
+    2 "Remove Port" \
+    3 "Enable Port" \
+    4 "Disable Port" \
+    5 "Access Port" \
+    6 "Trunk Port" \
+    7 "Back")
 
   case $choice in
-    1) enable_port ;;
-    2) disable_port ;;
-    3) show_menu ;;
-    *) show_menu ;;
-  esac
-}
-
-# show menu Trunk and Acess Port
-show_menu_trunk_access_port(){
-    choice=$(dialog --stdout --menu "Select an option:" 15 50 3 \
-    1 "Trunk Port" \
-    2 "Access Port" \
-    3 "Back")
-
-  case $choice in
-    1) set_trunk_port ;;
-    2) set_access_port ;;
-    3) show_menu ;;
+    1) add_port ;;
+    2) del_port ;;
+    3) enable_port ;;
+    4) disable_port ;;
+    5) set_access_port
+    6) set_trunk_port ;;
+    7) show_menu ;;
     *) show_menu ;;
   esac
 }
@@ -288,20 +282,18 @@ show_menu() {
     options=(
         1 "Show List of Bridge"
         2 "Add or Delete Bridge"
-        3 "Disable or Enable Port"
-        4 "Access or Trunk Port"
-        5 "Manage Vlan"
-        6 "Back"
+        3 "Manage Port"
+        4 "Manage Vlan"
+        5 "Back"
     )
 
     choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
     case $choices in
         1) list_bridges ;;
         2) show_menu_add_remove_bridge ;;
-        3) show_menu_disable_enable_port ;;
-        4) show_menu_trunk_access_port ;;
-        5) show_menu_vlan ;;
-        6) ./main.sh && exit ;;
+        3) show_menu_port ;;
+        4) show_menu_vlan ;;
+        5) ./main.sh && exit ;;
     esac
 }
 

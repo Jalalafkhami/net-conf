@@ -1,6 +1,6 @@
-.PHONY: install install_packages make_executable running_service
+.PHONY: install install_packages make_executable 
 
-install: install_packages make_executable running_service
+install: install_packages make_executable 
 	echo "Initial Installation complete. Please Run 'sudo ./main.sh'"
 
 # installing Requirement Package
@@ -20,16 +20,3 @@ make_executable:
 	@echo "Making all .sh scripts executable..."
 	find . -type f -name "*.sh" -exec chmod +x {} \;
 
-# Run Services
-running_service:
-	@echo "Running needed services..."
-	@if systemctl list-units --type=service | grep -q "resolvconf.service"; then \
-		sudo systemctl enable resolvconf && sudo systemctl start resolvconf; \
-	else \
-		echo "resolvconf service not found."; \
-	fi
-	@if systemctl list-units --type=service | grep -q "nftables.service"; then \
-		sudo systemctl enable nftables && sudo systemctl start nftables; \
-	else \
-		echo "nftables service not found."; \
-	fi
